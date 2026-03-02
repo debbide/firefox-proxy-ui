@@ -1,0 +1,19 @@
+services:
+  firefox:
+    build: .
+    image: firefox-proxy-ui:latest
+    container_name: firefox-proxy-ui
+    restart: unless-stopped
+    ports:
+      - "25858:5900"
+      - "18868:8080"
+      - "15000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./home/vncuser_data:/home/vncuser/.mozilla
+    environment:
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+      - PUID=1000
+      - PGID=1000
+      - FIREFOX_PROXY_PORT=20000

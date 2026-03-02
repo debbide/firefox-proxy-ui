@@ -1,0 +1,11 @@
+data/
+home/
+__pycache__/
+*.log
+*.pid
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+node_modules/
+.env
