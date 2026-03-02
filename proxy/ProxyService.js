@@ -231,27 +231,6 @@ export class ProxyService {
             return outbound;
         });
 
-        const dnsServers = [
-            { tag: 'local', address: 'local' }
-        ];
-        const dnsRules = [
-            { ip_is_private: true, server: 'local' }
-        ];
-
-        validNodes.forEach((node) => {
-            const outboundTag = `out-${node.id}`;
-            const dnsTag = `dns-${node.id}`;
-            dnsServers.push({
-                tag: dnsTag,
-                address: 'https://1.1.1.1/dns-query',
-                detour: outboundTag
-            });
-            dnsRules.push({
-                inbound: [`in-${node.id}`],
-                server: dnsTag
-            });
-        });
-
         const routes = {
             rules: [
                 {
@@ -269,10 +248,6 @@ export class ProxyService {
 
         return {
             log: { level: 'info' },
-            dns: {
-                servers: dnsServers,
-                rules: dnsRules
-            },
             inbounds,
             outbounds: [...outbounds, { type: 'direct', tag: 'direct' }],
             route: routes
