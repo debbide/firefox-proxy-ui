@@ -24,7 +24,7 @@ chmod 700 /home/vncuser/tmp
 chmod 755 /var/run/dbus
 chown -R vncuser:vncuser /home/vncuser
 
-echo "$VNC_PASSWORD" | x11vnc -storepasswd - > /home/vncuser/.vnc/passwd
+x11vnc -storepasswd "$VNC_PASSWORD" /home/vncuser/.vnc/passwd >/dev/null
 chmod 600 /home/vncuser/.vnc/passwd
 
 rm -f /tmp/.X0-lock /tmp/.X11-unix/X0 /home/vncuser/.Xauthority || true
