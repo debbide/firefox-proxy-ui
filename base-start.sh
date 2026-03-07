@@ -5,6 +5,7 @@ PORT="${PORT:-8080}"
 VNC_PASSWORD="${VNC_PASSWORD:-123456}"
 RESOLUTION="${RESOLUTION:-1280x720}"
 DISPLAY="${DISPLAY:-:0}"
+VNC_LOCALHOST="${VNC_LOCALHOST:-0}"
 
 export HOME=/home/vncuser
 export USER=vncuser
@@ -77,7 +78,11 @@ fluxbox -display "$DISPLAY" &
 FLUXBOX_PID=$!
 sleep 2
 
-x11vnc -display "$DISPLAY" -forever -shared -passwd "$VNC_PASSWORD" -rfbport 5900 -localhost -noxdamage -xrandr &
+X11VNC_ARGS=(-display "$DISPLAY" -forever -shared -passwd "$VNC_PASSWORD" -rfbport 5900 -noxdamage -xrandr)
+if [[ "$VNC_LOCALHOST" == "1" ]]; then
+    X11VNC_ARGS+=(-localhost)
+fi
+x11vnc "${X11VNC_ARGS[@]}" &
 X11VNC_PID=$!
 sleep 2
 
