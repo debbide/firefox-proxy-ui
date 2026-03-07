@@ -58,9 +58,37 @@ cleanup_locks() {
     find /home/vncuser/.mozilla -name ".parentlock" -delete || true
 }
 
+is_base_start_sh_valid() {
+    local f="/home/vncuser/start.sh"
+    [[ -s "$f" ]] || return 1
+    grep -q 'mkdir -p /home/vncuser/.vnc' "$f" || return 1
+    grep -q 'Xvfb :0 -screen 0' "$f" || return 1
+    grep -q 'if ! kill -0' "$f" || return 1
+}
+
+repair_base_start_sh_if_needed() {
+    if is_base_start_sh_valid; then
+        return 0
+    fi
+
+    if [[ -f "/app/base-start.sh" ]]; then
+        echo "[warn] invalid /home/vncuser/start.sh detected; restoring from /app/base-start.sh"
+        cp /app/base-start.sh /home/vncuser/start.sh
+        chmod +x /home/vncuser/start.sh
+        if ! is_base_start_sh_valid; then
+            echo "[error] restored /home/vncuser/start.sh is still invalid"
+            return 1
+        fi
+    else
+        echo "[error] /home/vncuser/start.sh is invalid and /app/base-start.sh is missing"
+        return 1
+    fi
+}
+
 start_panel
 apply_firefox_proxy
 cleanup_locks
+repair_base_start_sh_if_needed
 
 if [[ -f "/home/vncuser/start.sh" ]]; then
     sed -i 's/ -localhost//g' /home/vncuser/start.sh || true

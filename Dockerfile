@@ -1,4 +1,5 @@
-FROM ghcr.io/eooce/firefox:latest
+ARG BASE_IMAGE=ghcr.io/eooce/firefox:latest@sha256:07c4aa7314a1f155085aea45030c0838d02a47c879fabd0a59abd44178845d19
+FROM ${BASE_IMAGE}
 
 USER root
 
@@ -32,6 +33,7 @@ COPY app.py /app/app.py
 COPY main.py /app/main.py
 COPY requirements.txt /app/requirements.txt
 COPY package.json /app/package.json
+COPY base-start.sh /app/base-start.sh
 COPY proxy /app/proxy
 COPY templates /app/templates
 
@@ -47,7 +49,7 @@ RUN mkdir -p /app/data \
     && chown -R vncuser:vncuser /app
 
 COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+RUN chmod +x /app/start.sh /app/base-start.sh
 
 ENV DATA_DIR=/app/data \
     PROXY_LISTEN=127.0.0.1 \
