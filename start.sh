@@ -61,9 +61,15 @@ cleanup_locks() {
 is_base_start_sh_valid() {
     local f="/home/vncuser/start.sh"
     [[ -s "$f" ]] || return 1
+
+    # Reject known broken/compressed script signatures first.
+    grep -q 'mkdir-p/home/vncuser/.vnc' "$f" && return 1
+    grep -q 'if!kill-0' "$f" && return 1
+
+    # Accept both upstream and local fallback script styles.
     grep -q 'mkdir -p /home/vncuser/.vnc' "$f" || return 1
-    grep -q 'Xvfb :0 -screen 0' "$f" || return 1
-    grep -q 'if ! kill -0' "$f" || return 1
+    grep -Eq 'Xvfb[[:space:]].*-screen[[:space:]]+0' "$f" || return 1
+    grep -Eq 'if[[:space:]]+![[:space:]]+kill -0' "$f" || return 1
 }
 
 repair_base_start_sh_if_needed() {
@@ -76,8 +82,8 @@ repair_base_start_sh_if_needed() {
         cp /app/base-start.sh /home/vncuser/start.sh
         chmod +x /home/vncuser/start.sh
         if ! is_base_start_sh_valid; then
-            echo "[error] restored /home/vncuser/start.sh is still invalid"
-            return 1
+            echo "[warn] restored /home/vncuser/start.sh is still invalid; running /app/base-start.sh directly"
+            exec /app/base-start.sh
         fi
     else
         echo "[error] /home/vncuser/start.sh is invalid and /app/base-start.sh is missing"
