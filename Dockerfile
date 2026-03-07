@@ -49,7 +49,8 @@ RUN mkdir -p /app/data \
     && chown -R vncuser:vncuser /app
 
 COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh /app/base-start.sh
+RUN sed -i 's/\r$//' /app/start.sh /app/base-start.sh \
+    && chmod +x /app/start.sh /app/base-start.sh
 
 ENV DATA_DIR=/app/data \
     PROXY_LISTEN=127.0.0.1 \

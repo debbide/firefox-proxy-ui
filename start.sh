@@ -83,7 +83,7 @@ repair_base_start_sh_if_needed() {
         chmod +x /home/vncuser/start.sh
         if ! is_base_start_sh_valid; then
             echo "[warn] restored /home/vncuser/start.sh is still invalid; running /app/base-start.sh directly"
-            exec /app/base-start.sh
+            exec /bin/bash /app/base-start.sh
         fi
     else
         echo "[error] /home/vncuser/start.sh is invalid and /app/base-start.sh is missing"
@@ -101,7 +101,7 @@ if [[ -f "/home/vncuser/start.sh" ]]; then
 fi
 
 if [[ -x "/home/vncuser/start.sh" ]]; then
-    exec /home/vncuser/start.sh
+    exec /bin/bash /home/vncuser/start.sh
 else
     echo "[error] base start.sh not found at /home/vncuser/start.sh"
     tail -f /dev/null
