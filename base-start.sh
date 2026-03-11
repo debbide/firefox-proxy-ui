@@ -23,7 +23,7 @@ chmod 700 /home/vncuser/.vnc
 chmod 1777 /tmp/.X11-unix
 chmod 700 /home/vncuser/tmp
 chmod 755 /var/run/dbus
-chown -R vncuser:vncuser /home/vncuser
+chown -R vncuser:vncuser /home/vncuser 2>/dev/null || true
 
 x11vnc -storepasswd "$VNC_PASSWORD" /home/vncuser/.vnc/passwd >/dev/null
 chmod 600 /home/vncuser/.vnc/passwd
@@ -63,7 +63,7 @@ firefox --width=${VNC_WIDTH} --height=${VNC_HEIGHT} https://nav.eooce.com &
 EOF
 
 chmod +x /home/vncuser/.fluxbox/startup
-chown -R vncuser:vncuser /home/vncuser/.fluxbox /home/vncuser/.mozilla
+chown -R vncuser:vncuser /home/vncuser/.fluxbox /home/vncuser/.mozilla 2>/dev/null || true
 
 Xvfb "$DISPLAY" -screen 0 "${VNC_WIDTH}x${VNC_HEIGHT}x${VNC_DEPTH}" -ac +extension RANDR -nolisten tcp -noreset &
 XVFB_PID=$!
